@@ -1,5 +1,7 @@
 # fkwk-push
 
+[![Android Debug APK](https://github.com/schau0826-crypto/fkwk-push/actions/workflows/android-debug.yml/badge.svg)](https://github.com/schau0826-crypto/fkwk-push/actions/workflows/android-debug.yml)
+
 fkwk-push 是一个 Android 通知转发工具：在 Android 设备上读取系统通知栏中已经展示出来的通知内容，并通过 Bark 转发到 iPhone。
 
 它适合这样的场景：工作应用在 Android 上，但你下班后主要看 iPhone，只想接收通知弹窗里的标题和摘要，不想打开另一台手机。
@@ -67,6 +69,24 @@ Debug APK output:
 
 ```text
 android/app/build/outputs/apk/debug/app-debug.apk
+```
+
+
+## Download APK
+
+APK files are not committed to git. GitHub Actions builds a debug APK on every push to `main`.
+
+To download it:
+
+1. Open the `Android Debug APK` workflow in the Actions tab.
+2. Open the latest successful run.
+3. Download the `fkwk-push-debug-apk` artifact.
+
+To publish a GitHub Release with an APK attached, create and push a version tag:
+
+```bash
+git tag v0.1.1
+git push origin v0.1.1
 ```
 
 ## Basic Setup
