@@ -36,6 +36,9 @@ data class NtfySettings(
     val forwardingEnabled: Boolean = true,
     val pauseWhenInteractive: Boolean = false,
     val blockedKeywords: Set<String> = emptySet(),
+    val aiHubEnabled: Boolean = false,
+    val aiHubUrl: String = "",
+    val aiHubToken: String = "",
     // 只转发这些包名的通知，避免全量噪声。默认微信 + 企业微信。
     val monitoredPackages: Set<String> = DEFAULT_PACKAGES,
     val packagePriorities: Map<String, Priority> = DEFAULT_PACKAGE_PRIORITIES
@@ -66,6 +69,9 @@ class SettingsRepository @Inject constructor(
         val FORWARDING = booleanPreferencesKey("forwarding_enabled")
         val PAUSE_WHEN_INTERACTIVE = booleanPreferencesKey("pause_when_interactive")
         val BLOCKED_KEYWORDS = stringSetPreferencesKey("blocked_keywords")
+        val AI_HUB_ENABLED = booleanPreferencesKey("ai_hub_enabled")
+        val AI_HUB_URL = stringPreferencesKey("ai_hub_url")
+        val AI_HUB_TOKEN = stringPreferencesKey("ai_hub_token")
         val PACKAGES = stringSetPreferencesKey("monitored_packages")
         val PACKAGE_PRIORITIES = stringSetPreferencesKey("package_priorities")
     }
@@ -84,6 +90,9 @@ class SettingsRepository @Inject constructor(
             forwardingEnabled = p[Keys.FORWARDING] ?: true,
             pauseWhenInteractive = p[Keys.PAUSE_WHEN_INTERACTIVE] ?: false,
             blockedKeywords = p[Keys.BLOCKED_KEYWORDS] ?: emptySet(),
+            aiHubEnabled = p[Keys.AI_HUB_ENABLED] ?: false,
+            aiHubUrl = p[Keys.AI_HUB_URL] ?: "",
+            aiHubToken = p[Keys.AI_HUB_TOKEN] ?: "",
             monitoredPackages = p[Keys.PACKAGES] ?: NtfySettings.DEFAULT_PACKAGES,
             packagePriorities = p[Keys.PACKAGE_PRIORITIES].toPriorityMap()
         )
@@ -107,6 +116,9 @@ class SettingsRepository @Inject constructor(
             p[Keys.FORWARDING] = next.forwardingEnabled
             p[Keys.PAUSE_WHEN_INTERACTIVE] = next.pauseWhenInteractive
             p[Keys.BLOCKED_KEYWORDS] = next.blockedKeywords
+            p[Keys.AI_HUB_ENABLED] = next.aiHubEnabled
+            p[Keys.AI_HUB_URL] = next.aiHubUrl
+            p[Keys.AI_HUB_TOKEN] = next.aiHubToken
             p[Keys.PACKAGES] = next.monitoredPackages
             p[Keys.PACKAGE_PRIORITIES] = next.packagePriorities
                 .map { (pkg, priority) -> "$pkg=${priority.name}" }

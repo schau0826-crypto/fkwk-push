@@ -32,6 +32,7 @@ Android 通知监听
 - 支持 Bark 自定义通知图标，可选上传 Android 应用图标到自托管图标服务
 - 发送失败会写入本地历史，并由 WorkManager 在网络恢复后重试
 - 提供前台服务、开机自启、无障碍保活入口等 Android 后台存活辅助
+- 可选 AI Hub：将结构化通知事件上报到云端，生成长期记忆、每日简报和 Todo 草稿
 
 ### 隐私说明
 
@@ -122,6 +123,13 @@ Android 厂商通常会限制后台服务。为了稳定转发，建议配置：
 
 详见：[docs/02-Android保活配置.md](docs/02-Android保活配置.md)
 
+
+### 可选 AI Hub
+
+AI Hub 可以部署在云服务器上，接收 Android 端结构化通知事件，生成每日/实时简报、Todo 草稿和长期记忆。第一版使用 OpenAI-compatible API，飞书 webhook 用于简报/确认入口，Bark 用于最终提醒。
+
+详见：[docs/04-AI助手与通知记忆.md](docs/04-AI助手与通知记忆.md)
+
 ### 可选图标服务
 
 Bark 支持自定义通知图标。fkwk-push 可以读取 Android 来源应用图标，上传到简单的自托管图标服务，并在 Bark 推送里携带图标 URL。
@@ -175,6 +183,7 @@ Android notification listener
 - Supports Bark custom icons through an optional self-hosted icon upload service
 - Stores failed sends locally and retries through WorkManager when network is available
 - Provides foreground service, boot receiver, and optional accessibility keep-alive entry points
+- Optional AI Hub: uploads structured notification events for long-term memory, daily digests, and todo drafts
 
 ### Privacy
 
@@ -264,6 +273,13 @@ Android vendors often restrict background services. For reliable forwarding, con
 - optional accessibility keep-alive service
 
 See [docs/02-Android保活配置.md](docs/02-Android保活配置.md).
+
+
+### Optional AI Hub
+
+AI Hub can run on your server. It receives structured notification events from Android, generates daily/realtime digests, todo drafts, and long-term memory. The first version uses an OpenAI-compatible API, Feishu webhook for digest/confirmation entry points, and Bark for final reminders.
+
+See [docs/04-AI助手与通知记忆.md](docs/04-AI助手与通知记忆.md).
 
 ### Optional Icon Server
 

@@ -1,0 +1,13 @@
+{
+  "id": "evt_sample_001",
+  "postTime": 1760000000000,
+  "packageName": "com.tencent.wework",
+  "appName": "企业微信",
+  "title": "项目群",
+  "text": "明天上午 10 点前请确认排期风险",
+  "priority": "URGENT",
+  "matchedRuleName": "App 默认分级",
+  "forwarded": true,
+  "httpCode": 200,
+  "error": null
+}

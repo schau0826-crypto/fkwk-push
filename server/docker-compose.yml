@@ -23,6 +23,7 @@ services:
     depends_on:
       - ntfy
       - icon-uploader
+      - ai-hub
 
   # ntfy 推送服务
   ntfy:
@@ -63,8 +64,29 @@ services:
     expose:
       - "8080"
 
+  ai-hub:
+    build:
+      context: ./ai-hub
+    container_name: fkwk-ai-hub
+    restart: unless-stopped
+    environment:
+      AI_HUB_TOKEN: ${AI_HUB_TOKEN}
+      OPENAI_BASE_URL: ${OPENAI_BASE_URL}
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      OPENAI_MODEL: ${OPENAI_MODEL}
+      FEISHU_WEBHOOK_URL: ${FEISHU_WEBHOOK_URL}
+      PUBLIC_BASE_URL: "https://${NTFY_DOMAIN}:${PUBLIC_HTTPS_PORT}"
+      BARK_SERVER_URL: ${BARK_SERVER_URL}
+      BARK_DEVICE_KEY: ${BARK_DEVICE_KEY}
+      AI_HUB_DB: /data/ai-hub.db
+    volumes:
+      - ai_hub_data:/data
+    expose:
+      - "8081"
+
 volumes:
   caddy_data:
   caddy_config:
   ntfy_data:
   icon_data:
+  ai_hub_data:

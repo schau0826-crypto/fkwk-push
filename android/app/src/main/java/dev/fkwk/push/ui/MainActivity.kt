@@ -205,6 +205,9 @@ fun HomeScreen(
                     urgentLevel = state.barkUrgentLevel,
                     pauseWhenInteractive = state.pauseWhenInteractive,
                     blockedKeywords = state.blockedKeywords,
+                    aiHubEnabled = state.aiHubEnabled,
+                    aiHubUrl = state.aiHubUrl,
+                    aiHubToken = state.aiHubToken,
                     onSetBarkServerUrl = vm::setBarkServerUrl,
                     onSetBarkDeviceKey = vm::setBarkDeviceKey,
                     onSetTitleTemplate = vm::setBarkTitleTemplate,
@@ -215,6 +218,9 @@ fun HomeScreen(
                     onSetNormalLevel = vm::setBarkNormalLevel,
                     onSetUrgentLevel = vm::setBarkUrgentLevel,
                     onSetPauseWhenInteractive = vm::setPauseWhenInteractive,
+                    onSetAiHubEnabled = vm::setAiHubEnabled,
+                    onSetAiHubUrl = vm::setAiHubUrl,
+                    onSetAiHubToken = vm::setAiHubToken,
                     onAddBlockedKeyword = vm::addBlockedKeyword,
                     onRemoveBlockedKeyword = vm::removeBlockedKeyword,
                     onOpenNotificationAccess = onOpenNotificationAccess,
@@ -358,6 +364,9 @@ private fun SettingsTab(
     urgentLevel: BarkLevel,
     pauseWhenInteractive: Boolean,
     blockedKeywords: Set<String>,
+    aiHubEnabled: Boolean,
+    aiHubUrl: String,
+    aiHubToken: String,
     onSetBarkServerUrl: (String) -> Unit,
     onSetBarkDeviceKey: (String) -> Unit,
     onSetTitleTemplate: (String) -> Unit,
@@ -368,6 +377,9 @@ private fun SettingsTab(
     onSetNormalLevel: (BarkLevel) -> Unit,
     onSetUrgentLevel: (BarkLevel) -> Unit,
     onSetPauseWhenInteractive: (Boolean) -> Unit,
+    onSetAiHubEnabled: (Boolean) -> Unit,
+    onSetAiHubUrl: (String) -> Unit,
+    onSetAiHubToken: (String) -> Unit,
     onAddBlockedKeyword: (String) -> Unit,
     onRemoveBlockedKeyword: (String) -> Unit,
     onOpenNotificationAccess: () -> Unit,
@@ -492,6 +504,43 @@ private fun SettingsTab(
                         }
                     }
                 }
+            }
+        }
+
+        SectionCard("AI Hub", "把结构化通知事件上报到云端，用于长期记忆、简报和 Todo 草稿。") {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column(
+                    modifier = Modifier.weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(3.dp)
+                ) {
+                    Text("启用 AI 事件上报", style = MaterialTheme.typography.bodyMedium)
+                    Text(
+                        "关闭时只保留本机历史和 Bark 转发，不上传给 AI Hub。",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = TextSecondary
+                    )
+                }
+                Switch(checked = aiHubEnabled, onCheckedChange = onSetAiHubEnabled)
+            }
+            if (aiHubEnabled) {
+                OutlinedTextField(
+                    value = aiHubUrl,
+                    onValueChange = onSetAiHubUrl,
+                    label = { Text("AI Hub 地址，例如 https://push.example.com") },
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(12.dp)
+                )
+                OutlinedTextField(
+                    value = aiHubToken,
+                    onValueChange = onSetAiHubToken,
+                    label = { Text("AI Hub Token") },
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(12.dp)
+                )
             }
         }
 

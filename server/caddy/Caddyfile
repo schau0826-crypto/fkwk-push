@@ -32,6 +32,14 @@
 		reverse_proxy icon-uploader:8080
 	}
 
+	handle /ai/* {
+		reverse_proxy ai-hub:8081
+	}
+
+	handle /healthz {
+		reverse_proxy ai-hub:8081
+	}
+
 	handle {
 		reverse_proxy ntfy:80
 	}
