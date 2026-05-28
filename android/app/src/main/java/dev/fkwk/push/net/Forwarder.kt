@@ -25,7 +25,6 @@ import javax.inject.Singleton
 class Forwarder @Inject constructor(
     private val ruleEngine: RuleEngine,
     private val barkClient: BarkClient,
-    private val aiHubClient: AiHubClient,
     private val deviceState: DeviceState,
     private val settingsRepo: SettingsRepository,
     private val logDao: LogDao,
@@ -68,19 +67,15 @@ class Forwarder @Inject constructor(
 
         if (skipReason != null) {
             Timber.d("跳过来自 %s 的通知转发：%s", packageName, skipReason)
-            publishAiEvent(settings, logId, evaluated, forwarded = false, httpCode = null, error = skipReason)
             return
         }
 
         when (val r = barkClient.publish(settings, evaluated)) {
-            is PublishResult.Success -> {
+            is PublishResult.Success ->
                 logDao.updateResult(logId, forwarded = true, code = r.httpCode, error = null)
-                publishAiEvent(settings, logId, evaluated, forwarded = true, httpCode = r.httpCode, error = null)
-            }
 
             is PublishResult.Failure -> {
                 logDao.updateResult(logId, forwarded = false, code = r.httpCode, error = r.error)
-                publishAiEvent(settings, logId, evaluated, forwarded = false, httpCode = r.httpCode, error = r.error)
                 Timber.w("发布失败(%s)，调度重试", r.error)
                 scheduleRetry()
             }
@@ -93,32 +88,6 @@ class Forwarder @Inject constructor(
             .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, 30, TimeUnit.SECONDS)
             .build()
         workManager.enqueueUniqueWork("retry-forward", ExistingWorkPolicy.KEEP, req)
-    }
-
-    private fun publishAiEvent(
-        settings: dev.fkwk.push.data.NtfySettings,
-        logId: Long,
-        evaluated: EvaluatedNotification,
-        forwarded: Boolean,
-        httpCode: Int?,
-        error: String?
-    ) {
-        aiHubClient.publish(
-            settings,
-            AiNotificationEvent(
-                id = "android-$logId",
-                postTime = evaluated.postTime,
-                packageName = evaluated.packageName,
-                appName = aiHubClient.appLabel(evaluated.packageName),
-                title = evaluated.title,
-                text = evaluated.text,
-                priority = evaluated.priority,
-                matchedRuleName = evaluated.matchedRuleName,
-                forwarded = forwarded,
-                httpCode = httpCode,
-                error = error
-            )
-        )
     }
 
     companion object {

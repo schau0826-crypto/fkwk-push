@@ -44,9 +44,6 @@ class HomeViewModel @Inject constructor(
     fun setBarkNormalLevel(v: BarkLevel) = launchUpdate { it.copy(barkNormalLevel = v) }
     fun setBarkUrgentLevel(v: BarkLevel) = launchUpdate { it.copy(barkUrgentLevel = v) }
     fun setPauseWhenInteractive(v: Boolean) = launchUpdate { it.copy(pauseWhenInteractive = v) }
-    fun setAiHubEnabled(v: Boolean) = launchUpdate { it.copy(aiHubEnabled = v) }
-    fun setAiHubUrl(v: String) = launchUpdate { it.copy(aiHubUrl = v.trim()) }
-    fun setAiHubToken(v: String) = launchUpdate { it.copy(aiHubToken = v.trim()) }
     fun addBlockedKeyword(v: String) = launchUpdate {
         val keyword = v.trim()
         if (keyword.isBlank()) it else it.copy(blockedKeywords = it.blockedKeywords + keyword)
