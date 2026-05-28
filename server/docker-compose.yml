@@ -1,0 +1,70 @@
+services:
+  # 反向代理 + 自动 HTTPS（DNS-01 签发，无需开放 80 端口）
+  caddy:
+    build:
+      context: ./caddy
+      args:
+        # 切换 DNS 插件时改这里：cloudflare / tencentcloud / alidns
+        DNS_PLUGIN: ${DNS_PROVIDER}
+    container_name: fkwk-caddy
+    restart: unless-stopped
+    ports:
+      - "${PUBLIC_HTTPS_PORT}:${PUBLIC_HTTPS_PORT}"
+    environment:
+      NTFY_DOMAIN: ${NTFY_DOMAIN}
+      PUBLIC_HTTPS_PORT: ${PUBLIC_HTTPS_PORT}
+      ACME_EMAIL: ${ACME_EMAIL}
+      DNS_PROVIDER: ${DNS_PROVIDER}
+      DNS_API_TOKEN: ${DNS_API_TOKEN}
+    volumes:
+      - ./caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - ntfy
+      - icon-uploader
+
+  # ntfy 推送服务
+  ntfy:
+    image: binwiederhier/ntfy:latest
+    container_name: fkwk-ntfy
+    restart: unless-stopped
+    command: serve
+    environment:
+      # 对外完整 URL（含非标端口），客户端订阅时用这个
+      NTFY_BASE_URL: "https://${NTFY_DOMAIN}:${PUBLIC_HTTPS_PORT}"
+      NTFY_LISTEN_HTTP: ":80"
+      NTFY_BEHIND_PROXY: "true"
+      NTFY_AUTH_FILE: "/var/lib/ntfy/auth.db"
+      NTFY_AUTH_DEFAULT_ACCESS: "deny-all"
+      NTFY_CACHE_FILE: "/var/lib/ntfy/cache.db"
+      NTFY_CACHE_DURATION: "72h"
+      NTFY_ATTACHMENT_CACHE_DIR: "/var/lib/ntfy/attachments"
+      # 关键：iOS 即时推送依赖 ntfy.sh 的 APNs 中转。消息正文仍存在你自己服务器，
+      # ntfy.sh 只收到一个“去 poll”的空信号，正文不出你的服务器。
+      NTFY_UPSTREAM_BASE_URL: "https://ntfy.sh"
+      TZ: "Asia/Shanghai"
+    volumes:
+      - ntfy_data:/var/lib/ntfy
+    # 仅在内网暴露给 caddy，不直接对公网开端口
+    expose:
+      - "80"
+
+  icon-uploader:
+    build:
+      context: ./icon-uploader
+    container_name: fkwk-icon-uploader
+    restart: unless-stopped
+    environment:
+      ICON_UPLOAD_TOKEN: ${ICON_UPLOAD_TOKEN}
+      ICON_ROOT: /data/icons
+    volumes:
+      - icon_data:/data/icons
+    expose:
+      - "8080"
+
+volumes:
+  caddy_data:
+  caddy_config:
+  ntfy_data:
+  icon_data:

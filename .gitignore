@@ -1,0 +1,39 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# Android / Gradle
+.gradle/
+build/
+**/build/
+android/local.properties
+android/.gradle/
+android/app/build/
+local.properties
+captures/
+.externalNativeBuild/
+.cxx/
+
+# Secrets and local config
+.env
+.env.*
+!*.env.example
+*.jks
+*.keystore
+*.p12
+*.pem
+*.key
+google-services.json
+
+# Release artifacts
+*.apk
+*.aab
+
+# Logs
+*.log

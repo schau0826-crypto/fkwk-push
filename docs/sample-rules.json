@@ -1,0 +1,47 @@
+{
+  "version": 1,
+  "rules": [
+    {
+      "id": 0,
+      "name": "老板消息置顶",
+      "enabled": true,
+      "order": 0,
+      "field": "TITLE",
+      "op": "CONTAINS",
+      "pattern": "张总",
+      "priority": "URGENT"
+    },
+    {
+      "id": 0,
+      "name": "含紧急关键词",
+      "enabled": true,
+      "order": 1,
+      "field": "ANY",
+      "op": "REGEX",
+      "pattern": "(紧急|尽快|马上|@所有人|线上故障)",
+      "priority": "URGENT"
+    },
+    {
+      "id": 0,
+      "name": "工作时段的企微=普通",
+      "enabled": true,
+      "order": 2,
+      "field": "PACKAGE",
+      "op": "EQUALS",
+      "pattern": "com.tencent.wework",
+      "priority": "NORMAL",
+      "activeFromMinute": 540,
+      "activeToMinute": 1080
+    },
+    {
+      "id": 0,
+      "name": "重要客户群",
+      "enabled": true,
+      "order": 3,
+      "field": "TITLE",
+      "op": "CONTAINS",
+      "pattern": "百洋项目群",
+      "priority": "NORMAL"
+    }
+  ]
+}

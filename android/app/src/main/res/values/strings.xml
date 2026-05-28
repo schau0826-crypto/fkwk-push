@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">fkwk push</string>
+    <string name="accessibility_label">fkwk push 保活</string>
+    <string name="accessibility_description">仅用于保持通知转发服务存活，不读取任何屏幕内容。</string>
+    <string name="fg_channel_name">服务运行中</string>
+    <string name="fg_notification_title">fkwk push 正在守护通知</string>
+</resources>
